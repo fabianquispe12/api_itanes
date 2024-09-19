@@ -1,9 +1,22 @@
 import { Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
-import { DatabaseController } from './database.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  controllers: [DatabaseController],
-  providers: [DatabaseService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DEV_DB_HOST,
+      port: parseInt(process.env.DEV_DB_PORT, 10),
+      username: process.env.DEV_DB_USERNAME,
+      password: process.env.DEV_DB_PASSWORD,
+      database: process.env.DEV_DB_DATABASE,
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
+  ],
 })
 export class DatabaseModule {}
